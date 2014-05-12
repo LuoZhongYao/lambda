@@ -2,9 +2,8 @@
 #define __Z_H__
 
 /*! Now, we open a new programming !*/
-
 #ifndef UNUSED
-#define UNUSED(x)   (void)(x)
+#define UNUSED(x)   ((void)x)
 #endif
 
 #define choose_expr __builtin_choose_expr
@@ -29,20 +28,9 @@
             __VA_ARGS__;\
         }_v;})
 
-#define throw(excpt)    goto excpt
-#define CATCH0(arg)      arg:
-#define CATCH1(arg,...)  CATCH0(arg) 
-#define CATCH2(arg,...)  CATCH0(arg) CATCH1(__VA_ARGS__)
-#define CATCH3(arg,...)  CATCH0(arg) CATCH2(__VA_ARGS__)
-#define CATCH4(arg,...)  CATCH0(arg) CATCH3(__VA_ARGS__)
-#define CATCH5(arg,...)  CATCH0(arg) CATCH4(__VA_ARGS__)
-#define CATCH6(arg,...)  CATCH0(arg) CATCH5(__VA_ARGS__)
-#define CATCH7(arg,...)  CATCH0(arg) CATCH6(__VA_ARGS__)
-#define CATCH8(arg,...)  CATCH0(arg) CATCH7(__VA_ARGS__)
-#define CATCH9(arg,...)  CATCH0(arg) CATCH8(__VA_ARGS__)
-#define catch(...)    TOKEN(CATCH,PP_NARG(__VA_ARGS__))(__VA_ARGS__)
+#define throw    goto
 
-#define foreach(start,end) for(__typeof__(end) i = start;i < end;i++)
+#define foreach(index,start,end) for(__typeof__(end) index = start;index < end;index++)
 #define ARRAY_SIZE(v)  (sizeof(v) / sizeof(__typeof__(v[0])) + __must_be_array(v))
 
 
@@ -71,18 +59,33 @@
 #define TOKEN(x,y)  _TOKEN(x,y)
 #define _TOKEN(x,y) x ## y
 
-#define LOGIC0(expr,arg)             (expr arg)
-#define LOGIC1(logic,expr,arg,...)   LOGIC0(expr,arg) 
-#define LOGIC2(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC1(logic,expr,__VA_ARGS__)
-#define LOGIC3(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC2(logic,expr,__VA_ARGS__)
-#define LOGIC4(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC3(logic,expr,__VA_ARGS__)
-#define LOGIC5(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC4(logic,expr,__VA_ARGS__)
-#define LOGIC6(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC5(logic,expr,__VA_ARGS__)
-#define LOGIC7(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC6(logic,expr,__VA_ARGS__)
-#define LOGIC8(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC7(logic,expr,__VA_ARGS__)
-#define LOGIC9(logic,expr,arg,...)   LOGIC0(expr,arg) logic LOGIC8(logic,expr,__VA_ARGS__)
-#define LOGIC(logic,expr,...)        TOKEN(LOGIC,PP_NARG(__VA_ARGS__))(logic,expr,__VA_ARGS__)
-#define and(expr,...)   (LOGIC(&&,expr,__VA_ARGS__))
-#define  or(expr,...)   (LOGIC(||,expr,__VA_ARGS__))
+#define EXPR0(expr,arg)            (expr arg)
+#define EXPR1(expr,link,arg,...)   EXPR0(expr,arg) 
+#define EXPR2(expr,link,arg,...)   EXPR0(expr,arg) link EXPR1(expr,link,__VA_ARGS__)
+#define EXPR3(expr,link,arg,...)   EXPR0(expr,arg) link EXPR2(expr,link,__VA_ARGS__)
+#define EXPR4(expr,link,arg,...)   EXPR0(expr,arg) link EXPR3(expr,link,__VA_ARGS__)
+#define EXPR5(expr,link,arg,...)   EXPR0(expr,arg) link EXPR4(expr,link,__VA_ARGS__)
+#define EXPR6(expr,link,arg,...)   EXPR0(expr,arg) link EXPR5(expr,link,__VA_ARGS__)
+#define EXPR7(expr,link,arg,...)   EXPR0(expr,arg) link EXPR6(expr,link,__VA_ARGS__)
+#define EXPR8(expr,link,arg,...)   EXPR0(expr,arg) link EXPR7(expr,link,__VA_ARGS__)
+#define EXPR9(expr,link,arg,...)   EXPR0(expr,arg) link EXPR8(expr,link,__VA_ARGS__)
+#define EXPR(expr,link,...)        TOKEN(EXPR,PP_NARG(__VA_ARGS__))(expr,link,__VA_ARGS__)
+#define and(expr,...)      EXPR(expr,&&,__VA_ARGS__)
+#define or(expr,...)       EXPR(expr,||,__VA_ARGS__)
+
+#define APPLY0(fn,arg)            fn(arg)
+#define APPLY1(fn,link,arg,...)   APPLY0(fn,arg) 
+#define APPLY2(fn,link,arg,...)   APPLY0(fn,arg) link APPLY1(fn,link,__VA_ARGS__)
+#define APPLY3(fn,link,arg,...)   APPLY0(fn,arg) link APPLY2(fn,link,__VA_ARGS__)
+#define APPLY4(fn,link,arg,...)   APPLY0(fn,arg) link APPLY3(fn,link,__VA_ARGS__)
+#define APPLY5(fn,link,arg,...)   APPLY0(fn,arg) link APPLY4(fn,link,__VA_ARGS__)
+#define APPLY6(fn,link,arg,...)   APPLY0(fn,arg) link APPLY5(fn,link,__VA_ARGS__)
+#define APPLY7(fn,link,arg,...)   APPLY0(fn,arg) link APPLY6(fn,link,__VA_ARGS__)
+#define APPLY8(fn,link,arg,...)   APPLY0(fn,arg) link APPLY7(fn,link,__VA_ARGS__)
+#define APPLY9(fn,link,arg,...)   APPLY0(fn,arg) link APPLY8(fn,link,__VA_ARGS__)
+#define APPLY(fn,link,...)        TOKEN(APPLY,PP_NARG(__VA_ARGS__))(fn,link,__VA_ARGS__)
+#define _CATCH(x)    x:
+#define catch(...)  APPLY(_CATCH,,__VA_ARGS__)
+#define unused(...) APPLY(UNUSED,;,__VA_ARGS__)
 
 #endif
